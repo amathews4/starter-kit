@@ -1,10 +1,12 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {
   ViroARScene,
-  ViroText,
-  ViroConstants,
   ViroARSceneNavigator,
+  ViroARImageMarker,
+  ViroARTrackingTargets,
+  ViroImage,
 } from '@viro-community/react-viro';
 
 const HelloWorldSceneAR = () => {
@@ -27,6 +29,26 @@ const HelloWorldSceneAR = () => {
         position={[0, 0, -1]}
         style={styles.helloWorldTextStyle}
       />
+    </ViroARScene>
+  );
+  */
+
+  ViroARTrackingTargets.createTargets({
+    'mint' : {
+      source: require('./images/extra_mint.jpg'),
+      orientation: 'Up',
+      physicalWidth: 0.1,
+    },
+  });
+
+  return (
+    <ViroARScene>
+      <ViroARImageMarker target = {'mint'} >
+        <ViroImage source = {require('./images/jackie.png')}
+          onLoadStart = {this._onLoadStart}
+          onLoadEnd = {this._onLoadEnd}
+          onError = {this._onError} />
+      </ViroARImageMarker>
     </ViroARScene>
   );
 };
