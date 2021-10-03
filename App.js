@@ -10,6 +10,7 @@ import {
 } from '@viro-community/react-viro';
 
 const HelloWorldSceneAR = () => {
+  /*
   const [text, setText] = useState('Initializing AR...');
 
   function onInitialized(state, reason) {
