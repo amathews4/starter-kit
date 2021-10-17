@@ -1,13 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { Component } from 'react';
 import {
   ViroARScene,
   ViroARSceneNavigator,
-  ViroARImageMarker,
-  ViroARTrackingTargets,
   ViroImage,
+  //ViroConstants
 } from '@viro-community/react-viro';
+import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 
 const HelloWorldSceneAR = () => {
   /*
@@ -34,45 +33,80 @@ const HelloWorldSceneAR = () => {
   );
   */
 
-  ViroARTrackingTargets.createTargets({
-    'mint' : {
-      source: require('./images/extra_mint.jpg'),
-      orientation: 'Up',
-      physicalWidth: 0.1,
-    },
-  });
-
   return (
     <ViroARScene>
-      <ViroARImageMarker target = {'mint'} >
-        <ViroImage source = {require('./images/jackie.png')}
-          onLoadStart = {this._onLoadStart}
-          onLoadEnd = {this._onLoadEnd}
-          onError = {this._onError} />
-      </ViroARImageMarker>
+      <ViroImage source = {require('./images/jackie.png')}
+        scale={[0.5,0.5,0.5]}
+        position={[0,0,-1]} />
     </ViroARScene>
   );
 };
 
-export default () => {
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.navigatorRef = React.createRef();
+    this.state = {
+      navigator: null,
+    };
+  }
+  componentDidMount() {
+    var navRef = this.navigatorRef;
+    this.setState({navigator: navRef});
+  }
+
+  render() {
+    return (
+      <View style = {{flex: 1}}>
+        <ViroARSceneNavigator
+        style = {{flex: 1}}
+        ref = {this.navigatorRef}
+        autofocus={true}
+        initialScene={{
+          scene: HelloWorldSceneAR,
+        }}
+        />
+        <View style = {style.takePic}>
+          <TouchableOpacity onPress = {this.takeScreenshot}>
+            <Text style = {style.buttonText}>Hello World</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  takeScreenshot() {
+    console.log(this.navigator);
+    var curDate = new Date();
+    var curDateFormat = curDate.toISOString().split('T')[0];
+    this.state.navigator.arSceneNavigator.takeScreenshot('Viro' + curDateFormat, true);
+  }
+}
+
+const style = StyleSheet.create({
+  takePic: {
+    width:'50%',
+    zIndex:2,
+    backgroundColor: 'transparent',
+  },
+  buttonText: {
+    fontSize: 20,
+  },
+});
+/*
+export default (props) => {
+
   return (
+    <>
     <ViroARSceneNavigator
+      ref = {}
       autofocus={true}
       initialScene={{
         scene: HelloWorldSceneAR,
-      }}
-      style={styles.f1}
+      }
+      }
     />
+    </>
   );
 };
-
-var styles = StyleSheet.create({
-  f1: {flex: 1},
-  helloWorldTextStyle: {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#ffffff',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-});
+*/
